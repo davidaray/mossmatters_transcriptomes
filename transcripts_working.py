@@ -1,6 +1,7 @@
 
 from Bio import SeqIO
 import statistics as stat
+import pandas as pd
 import argparse
 
 def get_args():
@@ -10,30 +11,46 @@ def get_args():
 
 	args = parser.parse_args()
 	INFASTA = args.ifasta
-	BLASTP = args.blastp
+	BLASTX = args.blastx
 	
-	return INFASTA, BLASTP
+	return INFASTA, BLASTX
 #	return INFASTA, PREFIX
-INFASTA, BLASTP = get_args()
+INFASTA, BLASTX = get_args()
 
 print("Input fasta = " + INFASTA + ".")
-print("Input blastp = " + BLASTP + ".")
+print("Input blastx = " + BLASTX + ".")
 
 STATS = open('stats.txt', 'w')
 
 #TD = SeqIO.to_dict(SeqIO.parse(INFASTA, "fasta"))
 
-for RECORD in SeqIO.to_dict(SeqIO.parse(INFASTA, "fasta")):
-   LIST.append(len(RECORD.seq))
-   
-print('Total bases = ' + str(sum(LIST)))
-STATS.write('Total bases = ' + str(sum(LIST)))
-print('Total transcripts = ' + str(len(LIST)))
-STATS.write('Total transcripts = ' + str(len(LIST)))
-print('Mean length of transcripts = ' + str(stat.mean(LIST)))
-STATS.write('Mean length of transcripts = ' + str(stat.mean(LIST)))
-print('Median length of transcripts = ' + str(stat.median(LIST)))
-STATS.write('Median length of transcripts = ' + str(stat.median(LIST)))
+LENLIST = []
+IDLIST = []
+ID_LIST = []
+for RECORD in SeqIO.parse(INFASTA, "fasta"):
+	LENLIST.append(len(RECORD.seq))
+	IDLIST.append(RECORD.id)
+	for LINE in IDLIST:
+		LINE = LINE.rsplit("_",1)
+		ID_LIST.append(LINE)
+			
+#print(LIST)
+print('Total bases = ' + str(sum(LENLIST)))
+STATS.write('Total bases = ' + str(sum(LENLIST)))
+print('Total transcripts = ' + str(len(LENLIST)))
+STATS.write('Total transcripts = ' + str(len(LENLIST)))
+print('Mean length of transcripts = ' + str(stat.mean(LENLIST)))
+STATS.write('Mean length of transcripts = ' + str(stat.mean(LENLIST)))
+print('Median length of transcripts = ' + str(stat.median(LENLIST)))
+STATS.write('Median length of transcripts = ' + str(stat.median(LENLIST)))
+
+
+IDS = pd.DataFrame(ID_LIST, columns = ['uni', 'iso'])
+#print(IDS)
+COUNTUNI = len(IDS['uni'].unique())
+print('There are ' + str(COUNTUNI) + 'unigenes in the file.')
+
+
 
 
 
