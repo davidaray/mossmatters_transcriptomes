@@ -26,16 +26,10 @@ IDLIST = []
 
 with open('stats.txt', 'w') as STATS:
 
-#TD = SeqIO.to_dict(SeqIO.parse(INFASTA, "fasta"))
 
-	for RECORD in SeqIO.parse(INFASTA, "fasta"):
+	for RECORD in SeqIO.parse(INFASTA, 'fasta'):
 		LENLIST.append(len(RECORD.seq))
-		IDLIST.append(RECORD.id)
-		for LINE in IDLIST:
-			LINE = LINE.rsplit("_",1)
-			ID_LIST.append(LINE)
 			
-#print(LIST)
 	print('Total bases = ' + str(sum(LENLIST)) + '.' )
 	STATS.write('Total bases = ' + str(sum(LENLIST)) + '.\n')
 	print('Total transcripts = ' + str(len(LENLIST)) + '.')
@@ -44,10 +38,11 @@ with open('stats.txt', 'w') as STATS:
 	STATS.write('Mean length of transcripts = ' + str(stat.mean(LENLIST)) + '.\n')
 	print('Median length of transcripts = ' + str(stat.median(LENLIST)) + '.')
 	STATS.write('Median length of transcripts = ' + str(stat.median(LENLIST)) + '.\n')
-#STATS.close()
 
-IDS = pd.DataFrame(ID_LIST, columns = ['uni', 'iso'])
-#print(IDS)
+	for RECORD in SeqIO.parse(INFASTA, 'fasta'):
+		IDLIST.append(RECORD.id.rsplit('_',1))
+
+IDS = pd.DataFrame(IDLIST, columns = ['uni', 'iso'])
 COUNTUNI = len(IDS['uni'].unique())
 print('There are ' + str(COUNTUNI) + ' unigenes in the file.')
 
