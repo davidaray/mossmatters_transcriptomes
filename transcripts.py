@@ -42,11 +42,11 @@ with open(PREFIX + '.stats.txt', 'w') as STATS:
 	STATS.write('Median length of transcripts = ' + str(stat.median(LENLIST)) + '.\n')
 	
 	LENLIST = sorted(LENLIST)
-	MEAN = stat.mean(LENLIST)
+	HALF = sum(LENLIST)/2
 	TOTALENTRIES = len(LENLIST)
 	for ENTRY in range(1, TOTALENTRIES):
 		RUNNINGTOTAL = sum(LENLIST[0:ENTRY])
-		if RUNNINGTOTAL >= MEAN:
+		if RUNNINGTOTAL >= HALF:
 			print('N50 = ' + str(LENLIST[ENTRY-1]) + '.')
 			STATS.write('N50 = ' + str(LENLIST[ENTRY-1]) + '.\n')
 			break
