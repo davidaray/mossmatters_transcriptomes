@@ -22,6 +22,7 @@ print("Input fasta = " + INFASTA + ".")
 print("Input blastx = " + BLASTX + ".")
 print("Prefix = " + PREFIX + ".")
 
+####PHASE 1
 ID_LIST = []
 LENLIST = []
 IDLIST = []
@@ -59,6 +60,24 @@ with open(PREFIX + '.stats.txt', 'w') as STATS:
 	print('There are ' + str(COUNTUNI) + ' unigenes in the file.')
 	STATS.write('There are ' + str(COUNTUNI) + ' unigenes in the file.\n')
 
+####PHASE 2
+#Task 1 - Number of transcripts with BLAST hits in a reference proteome
+	#Read in blastx file as dataframe
+	BLASTHITS = pd.read_table(BLASTX, sep='\t', usecols=[1,2], names=['ID', 'db'])
+	NUMHITS = len(BLASTHITS.ID.unique())
+	print('Transcripts with hits = ' + str(NUMHITS) + '.')
 
+#Task 2 - Collapse factor (average number of transcripts that match the same protein sequence)	
+	#Convert to a dataframe with the database hits and how many times they're hits
+	DBCOUNTS = BLASTHITS.db.value_counts().reset_index().rename(columns={'index': 'BLASTHITS', 0: 'count'})
+	#keep only the counts greater than 1
+	DBCOUNTSKEEP = DBCOUNTS[DBCOUNTS['db'] > 1]
+	
+	#find the mean of the counts columns
+	COLLAPSE = DBCOUNTSKEEP['db'].mean()
+	print('Collapse = ' + str(COLLAPSE) + '.')
+	
+	
+	
 
 
